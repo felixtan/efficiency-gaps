@@ -2,11 +2,11 @@ class DistrictElectionResults:
     """Stores election results
     """
 
-    def __init__(self, year, state, political_body, district_num, data):
+    def __init__(self, year, state, legislative_body_code, district, data):
         self.year = year
         self.state = state
-        self.political_body = political_body
-        self.district_num = district_num
+        self.legislative_body = legislative_body_code
+        self.district = district
 
         self.votes_for_dem = data["votes_for_dem"]
         self.votes_for_rep = data["votes_for_rep"]
