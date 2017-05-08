@@ -30,7 +30,7 @@ class StateElectionResultsTest(unittest.TestCase):
         self.assertRaises(Exception, StateElectionResults, state='AB', year=2014, legislative_body_code=0)
         self.assertRaises(Exception, StateElectionResults, state='BC', year=2014, legislative_body_code=0)
         self.assertRaises(Exception, StateElectionResults, state='YZ', year=2014, legislative_body_code=0)
-        self.assertRaises(Exception, StateElectionResults, state=1, year=2014, legislative_body_code=0)
+        self.assertRaises(TypeError, StateElectionResults, state=1, year=2014, legislative_body_code=0)
         self.assertRaises(Exception, StateElectionResults, year=2014, legislative_body_code=0)
 
     def test_raises_exception_if_invalid_legislative_body_code(self):

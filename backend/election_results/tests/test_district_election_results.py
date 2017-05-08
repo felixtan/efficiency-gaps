@@ -28,7 +28,7 @@ class DistrictElectionResultsTest(unittest.TestCase):
         self.assertRaises(Exception, Results, state='AB', year=2014, legislative_body_code=0, district=1)
         self.assertRaises(Exception, Results, state='BC', year=2014, legislative_body_code=0, district=1)
         self.assertRaises(Exception, Results, state='YZ', year=2014, legislative_body_code=0, district=1)
-        self.assertRaises(Exception, Results, state=1, year=2014, legislative_body_code=0, district=1)
+        self.assertRaises(TypeError, Results, state=1, year=2014, legislative_body_code=0, district=1)
         self.assertRaises(Exception, Results, year=2014, legislative_body_code=0, district=1)
 
     def test_raises_exception_if_invalid_legislative_body_code(self):
@@ -36,7 +36,7 @@ class DistrictElectionResultsTest(unittest.TestCase):
         self.assertRaises(Exception, Results, year=2014, state='NY', district=1)
 
     def test_raises_exception_if_invalid_district(self):
-        self.assertRaises(Exception, Results, district='1', year=2014, state='NY', legislative_body_code=0)
+        self.assertRaises(TypeError, Results, district='1', year=2014, state='NY', legislative_body_code=0)
         self.assertRaises(Exception, Results, year=2014, state='NY', legislative_body_code=0)
 
     # TODO: extract test cases out of this file into a separate fixtures file/dir
