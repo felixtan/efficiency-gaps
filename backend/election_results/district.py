@@ -109,7 +109,7 @@ class DistrictElectionResults:
         if not isinstance(code, int):
             raise TypeError("legislative body code has invalid type {}".format(type(code)))
 
-        return code in legislative_body_codes.keys()
+        return str(code) in legislative_body_codes.keys()
 
     def calc_wasted_votes(self, votes_rep, votes_dem, votes_total):
         """Calculates the wasted votes of Republican and Democratic candidates

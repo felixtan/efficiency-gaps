@@ -1,6 +1,10 @@
-def set_year_if_valid(self, year):
+def set_year_if_valid(results, year):
     """
-    Raises
+    Arguments:
+        election_results (ElectionResults) - An instance of ElectionResults
+        year (Int) - Election year
+
+    Raises:
         TypeError: A non-Int value was passed
     """
     try:

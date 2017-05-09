@@ -1,4 +1,5 @@
 import unittest
+from election_results.election_results import ElectionResults
 from election_results.state import StateElectionResults
 from election_results.district import DistrictElectionResults
 
@@ -9,6 +10,9 @@ class StateElectionResultsTest(unittest.TestCase):
 
     def tearDown(self):
         del self.results
+
+    def test_inherits_from_ElectionResults(self):
+        self.assertIsInstance(self.results, ElectionResults)
 
     def test_init(self):
         self.assertEqual(self.results.year, 2014)
@@ -26,16 +30,8 @@ class StateElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.votes_wasted_total_rep, None)
         self.assertEqual(self.results.votes_wasted_net, None)
 
-    def test_raises_exception_if_invalid_state(self):
-        self.assertRaises(Exception, StateElectionResults, state='AB', year=2014, legislative_body_code=0)
-        self.assertRaises(Exception, StateElectionResults, state='BC', year=2014, legislative_body_code=0)
-        self.assertRaises(Exception, StateElectionResults, state='YZ', year=2014, legislative_body_code=0)
-        self.assertRaises(TypeError, StateElectionResults, state=1, year=2014, legislative_body_code=0)
-        self.assertRaises(Exception, StateElectionResults, year=2014, legislative_body_code=0)
-
-    def test_raises_exception_if_invalid_legislative_body_code(self):
-        self.assertRaises(Exception, StateElectionResults, legislative_body_code=3, year=2014, state='NY')
-        self.assertRaises(Exception, StateElectionResults, year=2014, state='NY')
+    def test_appends_DistrictElectionResults(self):
+        pass
 
     # TODO: extract test cases out of this file into a separate fixtures file/dir
     def test_summarize_votes(self):
