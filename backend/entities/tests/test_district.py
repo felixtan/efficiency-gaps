@@ -1,13 +1,13 @@
 import unittest
-from entities.congressional_district import District
+from entities.district import District
 
-class TestCongressionalDistrict(unittest.TestCase):
+class TestDistrict(unittest.TestCase):
 
     def test_init(self):
         d = District(number=1, state='NY', legislative_body_code=0)
         self.assertEqual(d.number, 1)
         self.assertEqual(d.number, 'NY')
-        self.assertEqual(d.legislative_body, 'US House')
+        self.assertEqual(d.legislative_body_code, 0)
         self.election_results = {}
 
     def test_raises_exception_if_invalid_district_number(self):

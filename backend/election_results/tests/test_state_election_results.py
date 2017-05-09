@@ -13,7 +13,7 @@ class StateElectionResultsTest(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.results.year, 2014)
         self.assertEqual(self.results.state, 'NY')
-        self.assertEqual(self.results.legislative_body, 'US House')
+        self.assertEqual(self.results.legislative_body_code, 0)
 
         self.assertEqual(self.results.votes_total_dem, None)
         self.assertEqual(self.results.votes_total_rep, None)

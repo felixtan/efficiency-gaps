@@ -1,4 +1,4 @@
-{
+states = {
     "AL": "Alabama",
     "AK": "Alaska",
     "AZ": "Arizona",

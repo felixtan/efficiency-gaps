@@ -12,7 +12,7 @@ class DistrictElectionResultsTest(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.results.year, 2014)
         self.assertEqual(self.results.state, 'NY')
-        self.assertEqual(self.results.legislative_body, "US House")
+        self.assertEqual(self.results.legislative_body_code, 0)
         self.assertEqual(self.results.district, 1)
 
         self.assertEqual(self.results.votes_dem, None)
@@ -20,9 +20,9 @@ class DistrictElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.votes_other, None)
         self.assertEqual(self.results.votes_voided, None)
         self.assertEqual(self.results.votes_total, None)
-        self.assertEqual(self.results.winner.party, None)
-        self.assertEqual(self.results.winner.last_name, None)
-        self.assertEqual(self.results.winner.first_name, None)
+        self.assertEqual(self.results.winner['party'], None)
+        self.assertEqual(self.results.winner['last_name'], None)
+        self.assertEqual(self.results.winner['first_name'], None)
 
     def test_raises_exception_if_invalid_state(self):
         self.assertRaises(Exception, Results, state='AB', year=2014, legislative_body_code=0, district=1)
@@ -42,24 +42,25 @@ class DistrictElectionResultsTest(unittest.TestCase):
     # TODO: extract test cases out of this file into a separate fixtures file/dir
     def test_calculates_wasted_votes(self):
         wasted_votes = self.results.calc_wasted_votes(votes_rep=25, votes_dem=75, votes_total=100)
-        self.assertEquals(wasted_votes.rep, 25)
-        self.assertEquals(wasted_votes.dem, 24)
-        self.assertEquals(wasted_votes.net, -1)
+
+        self.assertEqual(wasted_votes['rep'], 25)
+        self.assertEqual(wasted_votes['dem'], 24)
+        self.assertEqual(wasted_votes['net'], -1)
 
         wasted_votes = self.results.calc_wasted_votes(votes_rep=57, votes_dem=43, votes_total=100)
-        self.assertEquals(wasted_votes.rep, 6)
-        self.assertEquals(wasted_votes.dem, 43)
-        self.assertEquals(wasted_votes.net, 37)
+        self.assertEqual(wasted_votes['rep'], 6)
+        self.assertEqual(wasted_votes['dem'], 43)
+        self.assertEqual(wasted_votes['net'], 37)
 
         wasted_votes = self.results.calc_wasted_votes(votes_rep=26, votes_dem=75, votes_total=101)
-        self.assertEquals(wasted_votes.rep, 26)
-        self.assertEquals(wasted_votes.dem, 24)
-        self.assertEquals(wasted_votes.net, -2)
+        self.assertEqual(wasted_votes['rep'], 26)
+        self.assertEqual(wasted_votes['dem'], 24)
+        self.assertEqual(wasted_votes['net'], -2)
 
         wasted_votes = self.results.calc_wasted_votes(votes_rep=58, votes_dem=43, votes_total=101)
-        self.assertEquals(wasted_votes.rep, 7)
-        self.assertEquals(wasted_votes.dem, 43)
-        self.assertEquals(wasted_votes.net, 36)
+        self.assertEqual(wasted_votes['rep'], 7)
+        self.assertEqual(wasted_votes['dem'], 43)
+        self.assertEqual(wasted_votes['net'], 36)
 
     # TODO: extract test cases out of this file into a separate fixtures file/dir
     def test_calculates_wasted_votes_raises_exception_if_votes_dont_add_up(self):
