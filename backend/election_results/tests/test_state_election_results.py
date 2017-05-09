@@ -24,7 +24,7 @@ class StateElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.districts_won_rep, [])
         self.assertEqual(self.results.votes_wasted_total_dem, None)
         self.assertEqual(self.results.votes_wasted_total_rep, None)
-        self.assertEqual(self.results.votes_wasted_total, None)
+        self.assertEqual(self.results.votes_wasted_net, None)
 
     def test_raises_exception_if_invalid_state(self):
         self.assertRaises(Exception, StateElectionResults, state='AB', year=2014, legislative_body_code=0)

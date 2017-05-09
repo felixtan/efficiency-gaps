@@ -4,7 +4,8 @@ import math
 from warnings import warn
 
 class DistrictElectionResults:
-    """Stores election results for a legislative district
+    """Represents the general election results for a legislative district for
+       a given state and election year
 
     Attributes:
         year (Int) - The election year
@@ -30,6 +31,10 @@ class DistrictElectionResults:
         """Instantiate a DistrictElectionResults object
 
         Attibutes:
+            year (Int) - The election year
+            state (String) - Two-letter abbreviation of US state
+            legislative_body_code (Int) - Int that maps to a legislative body
+            district (Int) - Legislative district number
             data (Dict) - Contains the non-argument properties
         """
         try:
