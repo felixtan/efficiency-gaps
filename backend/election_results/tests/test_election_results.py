@@ -8,7 +8,7 @@ class TestElectionResults(unittest.TestCase):
         self.assertRaises(utils.DistrictError, Results, type='d', year=2014, state='NY', legislative_body_code=0)
 
     def test_raises_exception_if_type_is_state_and_district_is_not_None(self):
-        self.assertRaises(utils.USStateError, Results, type='s', year=2014, state='NY', legislative_body_code=0, district=1)
+        self.assertRaises(utils.DistrictError, Results, type='s', year=2014, state='NY', legislative_body_code=0, district=1)
 
     def test_sets_state_only_if_abbrev_is_valid(self):
         # Invalid
@@ -16,7 +16,7 @@ class TestElectionResults(unittest.TestCase):
         self.assertRaises(utils.USStateError, Results, state='CE', type='s', year=2014, legislative_body_code=0)
         self.assertRaises(utils.USStateError, Results, state='IO', type='s', year=2014, legislative_body_code=0)
         self.assertRaises(utils.USStateError, Results, state='KA', type='s', year=2014, legislative_body_code=0)
-        self.assertRaises(utils.USStateError, Results, state='MN', type='s', year=2014, legislative_body_code=0)
+        self.assertRaises(utils.USStateError, Results, state='MH', type='s', year=2014, legislative_body_code=0)
         self.assertRaises(utils.USStateError, Results, state='NB', type='d', year=2014, legislative_body_code=0, district=1)
         self.assertRaises(utils.USStateError, Results, state='NW', type='d', year=2014, legislative_body_code=0, district=1)
         self.assertRaises(utils.USStateError, Results, state='OI', type='d', year=2014, legislative_body_code=0, district=1)
@@ -44,10 +44,10 @@ class TestElectionResults(unittest.TestCase):
 
         # Valid
         r = Results(year=1990, type='d', state='NY', legislative_body_code=0, district=1)
-        self.assertEqual(r.state, '1990')
+        self.assertEqual(r.year, '1990')
 
         r = Results(year='2161', type='d', state='NY', legislative_body_code=0, district=1)
-        self.assertEqual(r.state, '2161')
+        self.assertEqual(r.year, '2161')
 
     def test_sets_legislative_body_code_only_if_valid(self):
         # Invalid
@@ -63,12 +63,12 @@ class TestElectionResults(unittest.TestCase):
 
     def test_sets_district_only_if_valid(self):
         # Invalid
-        self.assertRaises(utils.DistrictError, Results, district=0, legislative_body_code=-1, type='d', state='NY', year=2000)
-        self.assertRaises(utils.DistrictError, Results, district=-1, legislative_body_code=-1, type='d', state='NY', year=2000)
+        self.assertRaises(utils.DistrictError, Results, district=0, legislative_body_code=0, type='d', state='NY', year=2000)
+        self.assertRaises(utils.DistrictError, Results, district=-1, legislative_body_code=0, type='d', state='NY', year=2000)
 
         # Valid
-        utils.set_district_if_valid(results=self.results, district='1')
-        self.assertEqual(self.results.district, '1')
+        r = Results(district='1', year=1990, type='d', state='NY', legislative_body_code=0)
+        self.assertEqual(r.district, '1')
 
-        utils.set_district_if_valid(results=self.results, district=999)
-        self.assertEqual(self.results.district, '999')
+        r = Results(district=999, year=1990, type='d', state='NY', legislative_body_code=0)
+        self.assertEqual(r.district, '999')

@@ -37,40 +37,6 @@ class DistrictElectionResults:
             district (Int) - Legislative district number
             data (Dict) - Contains the non-argument properties
         """
-        try:
-            if isinstance(year, int):
-                self.year = year
-            else:
-                raise TypeError("Year has invalid type {}".format(type(year)))
-        except TypeError as error:
-            raise error
-
-        try:
-            is_valid_state = self.is_valid_state(state)
-            if is_valid_state:
-                self.state = state
-            else:
-                raise NameError("No such state with abbrev {}".format(state))
-        except (TypeError, NameError) as error:
-            raise error
-
-        try:
-            is_valid_legislative_body_code = self.is_valid_legislative_body_code(legislative_body_code)
-            if is_valid_legislative_body_code:
-                self.legislative_body_code = legislative_body_code
-            else:
-                raise IndexError("Invalid legislative body code {}".format(legislative_body_code))
-        except (IndexError, TypeError) as error:
-            raise error
-
-        try:
-            if isinstance(district, int):
-                self.district = district
-            else:
-                raise TypeError("district has invalid type {}, must be int".format(type(district)))
-        except TypeError as error:
-            raise error
-
 
         self.votes_dem = None if data is None else data["votes_dem"]
         self.votes_rep = None if data is None else data["votes_rep"]

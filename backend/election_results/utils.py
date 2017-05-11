@@ -30,7 +30,7 @@ class VotesError(ElectionResultsError):
         msg = "Sum of votes for dem(={dem}) and rep(={rep}) is greater than \
             total(={total})".format(dem=votes_dem, rep=votes_rep, total=votes_total)
 
-        super(VotesError, self).__init__(msg)
+        super(__class__, self).__init__(msg)
 
         self.votes_dem = votes_dem
         self.votes_rep = votes_rep
@@ -45,8 +45,8 @@ class USStateError(ElectionResultsError):
     """
 
     def __init__(self, state):
-        msg = "There is no such state with the abbreviation {}".format(state)
-        super(USStateError, self).__init__(msg)
+        msg = "There is no such state with the two-letter abbreviation {}".format(state)
+        super(__class__, self).__init__(msg)
         self.state = state
 
 class LegislativeBodyError(ElectionResultsError):
@@ -61,7 +61,7 @@ class LegislativeBodyError(ElectionResultsError):
                 2 - State Legislature Lower House
         """.format(legislative_body_code)
 
-        super(LegislativeBodyError, self).__init__(msg)
+        super(__class__, self).__init__(msg)
         self.legislative_body_code = legislative_body_code
 
 class DistrictError(ElectionResultsError):
@@ -70,5 +70,5 @@ class DistrictError(ElectionResultsError):
 
     def __init__(self, district):
         msg = "Invalid district number {}".format(district)
-        super(DistrictError, self).__init__(msg)
+        super(__class__, self).__init__(msg)
         self.district = district
