@@ -52,9 +52,9 @@ class DistrictElectionResults(ElectionResults):
         self.votes_wasted_net = None if data is None else data["votes_wasted_net"]
 
         self.winner = {
-            "party": None if data is None else data["winner_party"],
-            "last_name": None if data is None else data["winner_last_name"],
-            "first_name": None if data is None else data["winner_first_name"]
+            "party": None if data is None else data['winner']['party'],
+            "last_name": None if data is None else data['winner']['last_name'],
+            "first_name": None if data is None else data['winner']['first_name'],
         }
 
     def calc_wasted_votes(self, votes_rep, votes_dem, votes_total):
