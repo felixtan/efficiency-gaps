@@ -1,3 +1,6 @@
+"""Defines a class for representing a US state's legislative elections
+"""
+
 import math
 import election_results.utils as utils
 from election_results.election_results import ElectionResults
@@ -56,6 +59,8 @@ class StateElectionResults(ElectionResults):
         self.votes_wasted_net = None if data is None else data["votes_wasted_net"]
 
     def summarize_votes(self, districts_results):
+        """Collects the results for a state's district elections
+        """
         self.votes_total_dem = 0
         self.votes_total_rep = 0
         self.votes_total_other = 0
@@ -98,4 +103,6 @@ class StateElectionResults(ElectionResults):
             )
 
     def calc_eff_gap(self, votes_total, votes_wasted_net):
+        """Calculates the efficiency gap of the election
+        """
         return round(votes_wasted_net / votes_total, 3)

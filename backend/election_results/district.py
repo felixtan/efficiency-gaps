@@ -1,3 +1,6 @@
+"""Defines a class for representing a legislative district's elections
+"""
+
 import math
 import election_results.utils as utils
 from warnings import warn
@@ -62,6 +65,8 @@ class DistrictElectionResults(ElectionResults):
 
            A wasted vote is defined as one for the losing candidate or one for
            the winning candidate in excess of the number needed to win.
+
+           Returns a dict of wasted votes for Rep and Dem candidates
         """
         if votes_total > votes_rep + votes_dem:
             votes_total = votes_rep + votes_dem

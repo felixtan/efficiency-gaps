@@ -1,19 +1,5 @@
-def set_year_if_valid(results, year):
-    """
-    Arguments:
-        election_results (ElectionResults) - An instance of ElectionResults
-        year (Int) - Election year
-
-    Raises:
-        TypeError: A non-Int value was passed
-    """
-    try:
-        if isinstance(year, int):
-            self.year = year
-        else:
-            raise TypeError("Year has invalid type {}".format(type(year)))
-    except TypeError as error:
-        raise error
+"""Custom errors for ElectionResults
+"""
 
 class ElectionResultsError(Exception):
     """Exception for errors raise by ElectionResults"""

@@ -1,3 +1,6 @@
+"""Defines an abstract class for representing US legislative elections
+"""
+
 import abc
 import election_results.utils as utils
 from fixtures.states import states
@@ -18,7 +21,9 @@ class ElectionResults(abc.ABC):
     """
 
     def __init__(self, type, year, state, legislative_body_code, district=None):
-
+        """Initializes an ElectionResults object. Validates year, state,
+            district and legislative_body_code.
+        """
         try:
             int(year)
             self.year = str(year)
