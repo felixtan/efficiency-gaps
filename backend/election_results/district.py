@@ -1,9 +1,9 @@
-from fixtures.states import states
-from fixtures.legislative_body_codes import legislative_body_codes
 import math
+import election_results.utils as utils
 from warnings import warn
+from election_results.election_results import ElectionResults
 
-class DistrictElectionResults:
+class DistrictElectionResults(ElectionResults):
     """Represents the general election results for a legislative district for
        a given state and election year
 
@@ -38,6 +38,9 @@ class DistrictElectionResults:
             data (Dict) - Contains the non-argument properties
         """
 
+        super(__class__, self).__init__(type='d', year=year, state=state,
+            legislative_body_code=legislative_body_code, district=district)
+
         self.votes_dem = None if data is None else data["votes_dem"]
         self.votes_rep = None if data is None else data["votes_rep"]
         self.votes_other = None if data is None else data["votes_other"]
@@ -54,29 +57,6 @@ class DistrictElectionResults:
             "first_name": None if data is None else data["winner_first_name"]
         }
 
-    def is_valid_state(self, state_abbrev):
-        """Returns true if state_abbrev is a US state abbreviation, else false
-
-           See ../fixtures/states.py
-        """
-        if not isinstance(state_abbrev, str):
-            raise TypeError("state abbrev has invalid type {}, must be str".format(type(state_abbrev)))
-
-        if len(state_abbrev) > 2:
-            raise NameError("Invalid state abbrev: {}, must be 2 letters".format(state_abbrev))
-
-        return state_abbrev.upper() in states.keys()
-
-    def is_valid_legislative_body_code(self, code):
-        """Returns true if code maps to a legislative body, else false
-
-           See ../fixtures/legislative_body_codes.py
-        """
-        if not isinstance(code, int):
-            raise TypeError("legislative body code has invalid type {}".format(type(code)))
-
-        return str(code) in legislative_body_codes.keys()
-
     def calc_wasted_votes(self, votes_rep, votes_dem, votes_total):
         """Calculates the wasted votes of Republican and Democratic candidates
 
@@ -87,7 +67,9 @@ class DistrictElectionResults:
             votes_total = votes_rep + votes_dem
             warn("Total votes is greater than the sum of votes for Reps and Dems")
         elif votes_total < votes_rep + votes_dem:
-            raise ArithmeticError("Total votes is less than the sum of votes for Reps and Dems")
+            raise utils.VotesError(votes_dem=self.votes_dem, votes_rep=self.votes_rep,
+                votes_total=self.votes_total, year=self.year, state=self.state,
+                legislative_body_code=self.legislative_body_code, district=self.district)
 
         votes_to_win = math.floor(votes_total / 2) + 1
         winning_party = "rep" if votes_rep > votes_dem else "dem"

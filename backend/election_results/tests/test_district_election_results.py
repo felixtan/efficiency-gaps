@@ -15,10 +15,10 @@ class DistrictElectionResultsTest(unittest.TestCase):
         self.assertIsInstance(self.results, ElectionResults)
 
     def test_init(self):
-        self.assertEqual(self.results.year, 2014)
+        self.assertEqual(self.results.year, '2014')
         self.assertEqual(self.results.state, 'NY')
-        self.assertEqual(self.results.legislative_body_code, 0)
-        self.assertEqual(self.results.district, 1)
+        self.assertEqual(self.results.legislative_body_code, '0')
+        self.assertEqual(self.results.district, '1')
 
         self.assertEqual(self.results.votes_dem, None)
         self.assertEqual(self.results.votes_rep, None)
