@@ -1,8 +1,10 @@
-# Byte-compiled / optimized / DLL files
-**/__pycache__/
-*.py[cod]
-*$py.class
+backend/entities
 
 # Other project directories
 playground
 source-data
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+*.py[cod]
+*$py.class
