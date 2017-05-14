@@ -1,4 +1,6 @@
 backend/entities
+backend/data
+backend/scraper
 
 # Other project directories
 playground
