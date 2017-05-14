@@ -22,15 +22,15 @@ class StateElectionResults(ElectionResults):
         votes_total_other (Int) - Sum total votes for third-party or independent
             candidates across the state's districts
         votes_total_voided (Int) - Sum total votes counted but not applied to any candidate
-        votes_total (Int) - Sum total votes for a candidate, not voided
-        districts_won_dem (List) - List of DistrictElectionResults won by Democrats
-        districts_won_rep (List) - List of DistrictElectionResults won by Republicans
+        votes_total (Int) - Sum total votes from all district election
         votes_wasted_total_dem (Int) - Sum total votes wasted in voting for a
             Democratic candidate
         votes_wasted_total_rep (Int) - Sum total votes wasted in voting for a
             Republican candidate
         votes_wasted_net (Int) - Net wasted votes; difference between the Democratic
             and Republican numbers
+        districts_won_dem (List) - List of DistrictElectionResults won by Democrats
+        districts_won_rep (List) - List of DistrictElectionResults won by Republicans
     """
 
     def __init__(self, year, state, legislative_body_code, data=None):
@@ -42,20 +42,19 @@ class StateElectionResults(ElectionResults):
                 legislative_body_code (Int) - Int that maps to a legislative body
                 data (Dict) - Contains the non-argument properties
         """
-
         super(__class__, self).__init__(type='s', year=year, state=state,
             legislative_body_code=legislative_body_code)
 
-        self.votes_total_dem = None if data is None else data["votes_dem"]
-        self.votes_total_rep = None if data is None else data["votes_rep"]
-        self.votes_total_other = None if data is None else data["votes_other"]
-        self.votes_total_voided = None if data is None else data["votes_voided"]
+        self.votes_total_dem = None if data is None else data["votes_total_dem"]
+        self.votes_total_rep = None if data is None else data["votes_total_rep"]
+        self.votes_total_other = None if data is None else data["votes_total_other"]
+        self.votes_total_voided = None if data is None else data["votes_total_voided"]
         self.votes_total = None if data is None else data["votes_total"]
         self.districts_won_dem = []
         self.districts_won_rep = []
 
-        self.votes_wasted_total_dem = None if data is None else data["votes_wasted_dem"]
-        self.votes_wasted_total_rep = None if data is None else data["votes_wasted_rep"]
+        self.votes_wasted_total_dem = None if data is None else data["votes_wasted_total_dem"]
+        self.votes_wasted_total_rep = None if data is None else data["votes_wasted_total_rep"]
         self.votes_wasted_net = None if data is None else data["votes_wasted_net"]
 
     def summarize_votes(self, districts_results):

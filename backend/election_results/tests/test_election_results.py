@@ -6,9 +6,14 @@ class TestElectionResults(unittest.TestCase):
 
     def test_raises_exception_if_type_is_district_and_number_is_None(self):
         self.assertRaises(utils.DistrictError, Results, type='d', year=2014, state='NY', legislative_body_code=0)
+        self.assertRaises(utils.DistrictError, Results, type='district', year=2014, state='NY', legislative_body_code=0)
 
-    def test_raises_exception_if_type_is_state_and_district_is_not_None(self):
-        self.assertRaises(utils.DistrictError, Results, type='s', year=2014, state='NY', legislative_body_code=0, district=1)
+    def test_sets_district_to_None_if_type_is_state(self):
+        r = Results(type='s', year=2014, state='NY', legislative_body_code=0, district=1)
+        self.assertEqual(r.district, None)
+
+        r = Results(type='state', year=2014, state='NY', legislative_body_code=0, district=1)
+        self.assertEqual(r.district, None)
 
     def test_sets_state_only_if_abbrev_is_valid(self):
         # Invalid

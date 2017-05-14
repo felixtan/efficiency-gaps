@@ -20,10 +20,20 @@ class ElectionResults(abc.ABC):
         district (Int/String) - Legislative district number
     """
 
-    def __init__(self, type, year, state, legislative_body_code, district=None):
+    def __init__(self, type, year, legislative_body_code, state=None, district=None):
         """Initializes an ElectionResults object. Validates year, state,
             district and legislative_body_code.
         """
+
+        if (type is None or
+            (type != 'd' and
+            type != 'district' and
+            type != 's' and
+            type != 'state' and
+            type != 'n' and
+            type != 'national')):
+            raise utils.ElectionResultsError('Invalid type {}'.format(type))
+
         try:
             int(year)
             self.year = str(year)
@@ -31,7 +41,9 @@ class ElectionResults(abc.ABC):
             raise ValueError("Invalid year {}".format(year))
 
         try:
-            if isinstance(state, str) and len(state) == 2 and state in states.keys():
+            if type == 'n' or type == 'national':
+                self.state = None
+            elif isinstance(state, str) and len(state) == 2 and state in states.keys():
                 self.state = state
             else:
                 raise utils.USStateError(state)
@@ -50,8 +62,11 @@ class ElectionResults(abc.ABC):
         try:
             if (type == 'd' or type == 'district') and district is not None and int(district) > 0:
                 self.district = str(district)
-            elif (type == 's' or type == 'state') and district is None:
+            elif (type == 's' or type == 'state'):
                 self.district = None
+            elif (type == 'n' or type == 'national'):
+                self.district = None
+                self.state = None
             else:
                 raise utils.DistrictError(district)
         except (utils.DistrictError, ValueError) as e:

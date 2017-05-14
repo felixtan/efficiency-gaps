@@ -24,11 +24,11 @@ class StateElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.votes_total_other, None)
         self.assertEqual(self.results.votes_total_voided, None)
         self.assertEqual(self.results.votes_total, None)
-        self.assertEqual(self.results.districts_won_dem, [])
-        self.assertEqual(self.results.districts_won_rep, [])
         self.assertEqual(self.results.votes_wasted_total_dem, None)
         self.assertEqual(self.results.votes_wasted_total_rep, None)
         self.assertEqual(self.results.votes_wasted_net, None)
+        self.assertEqual(self.results.districts_won_dem, [])
+        self.assertEqual(self.results.districts_won_rep, [])
 
     # TODO: extract test cases out of this file into a separate fixtures file/dir
     def test_calculates_the_efficiency_gap(self):
