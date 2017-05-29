@@ -22,7 +22,7 @@ class StateElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.votes_total_dem, None)
         self.assertEqual(self.results.votes_total_rep, None)
         self.assertEqual(self.results.votes_total_other, None)
-        self.assertEqual(self.results.votes_total_voided, None)
+        self.assertEqual(self.results.votes_total_scattered, None)
         self.assertEqual(self.results.votes_total, None)
         self.assertEqual(self.results.votes_wasted_total_dem, None)
         self.assertEqual(self.results.votes_wasted_total_rep, None)
@@ -41,7 +41,7 @@ class StateElectionResultsTest(unittest.TestCase):
             'votes_dem': 75,
             'votes_rep': 25,
             'votes_other': 0,
-            'votes_voided': 0,
+            'votes_scattered': 0,
             'votes_total': 100,
             'votes_wasted_dem': 24,
             'votes_wasted_rep': 25,
@@ -57,7 +57,7 @@ class StateElectionResultsTest(unittest.TestCase):
             'votes_dem': 60,
             'votes_rep': 40,
             'votes_other': 0,
-            'votes_voided': 0,
+            'votes_scattered': 0,
             'votes_total': 100,
             'votes_wasted_dem': 9,
             'votes_wasted_rep': 40,
@@ -73,7 +73,7 @@ class StateElectionResultsTest(unittest.TestCase):
             'votes_dem': 43,
             'votes_rep': 57,
             'votes_other': 0,
-            'votes_voided': 0,
+            'votes_scattered': 0,
             'votes_total': 100,
             'votes_wasted_dem': 43,
             'votes_wasted_rep': 6,
@@ -89,7 +89,7 @@ class StateElectionResultsTest(unittest.TestCase):
             'votes_dem': 48,
             'votes_rep': 52,
             'votes_other': 0,
-            'votes_voided': 0,
+            'votes_scattered': 0,
             'votes_total': 100,
             'votes_wasted_dem': 48,
             'votes_wasted_rep': 1,
@@ -105,7 +105,7 @@ class StateElectionResultsTest(unittest.TestCase):
             'votes_dem': 49,
             'votes_rep': 51,
             'votes_other': 0,
-            'votes_voided': 0,
+            'votes_scattered': 0,
             'votes_total': 100,
             'votes_wasted_dem': 49,
             'votes_wasted_rep': 0,
@@ -127,7 +127,7 @@ class StateElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.votes_wasted_total_rep, 72)
         self.assertEqual(self.results.votes_wasted_net, 101)
         self.assertEqual(self.results.votes_total_other, 0)
-        self.assertEqual(self.results.votes_total_voided, 0)
+        self.assertEqual(self.results.votes_total_scattered, 0)
         self.assertEqual(self.results.votes_total, 500)
         self.assertEqual(self.results.efficiency_gap, 0.202)
         self.assertEqual(len(self.results.districts_won_rep), 3)

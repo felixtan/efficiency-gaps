@@ -19,7 +19,7 @@ class DistrictElectionResults(ElectionResults):
         votes_dem (Int) - Number of votes for the Democratic candidate
         votes_rep (Int) - Number of votes for the Republican candidate
         votes_other (Int) - Number of votes for a third-party or independent
-        votes_voided (Int) - Number of votes that were invalid and not applied to
+        votes_scattered (Int) - Number of votes that were invalid and not applied to
             any candidate
         votes_total (Int) - Number of total votes in the election
         votes_wasted_dem (Int) - Number of votes wasted by the Democratic candidate
@@ -44,21 +44,26 @@ class DistrictElectionResults(ElectionResults):
         super(__class__, self).__init__(type='d', year=year, state=state,
             legislative_body_code=legislative_body_code, district=district)
 
-        self.votes_dem = None if data is None else data["votes_dem"]
-        self.votes_rep = None if data is None else data["votes_rep"]
-        self.votes_other = None if data is None else data["votes_other"]
-        self.votes_voided = None if data is None else data["votes_voided"]
+        self.votes_dem = None if data is None else (data["votes_dem"] if ("votes_dem" in data and data["votes_dem"] is not None) else 0)
+        self.votes_rep = None if data is None else (data["votes_rep"] if ("votes_rep" in data and data["votes_rep"] is not None) else 0)
+        self.votes_other = None if data is None else (data["votes_other"] if ("votes_other" in data and data["votes_other"] is not None) else 0)
+        self.votes_scattered = None if data is None else (data["votes_scattered"] if ("votes_scattered" in data and data["votes_scattered"] is not None) else 0)
         self.votes_total = None if data is None else data["votes_total"]
-
-        self.votes_wasted_dem = None if data is None else data["votes_wasted_dem"]
-        self.votes_wasted_rep = None if data is None else data["votes_wasted_rep"]
-        self.votes_wasted_net = None if data is None else data["votes_wasted_net"]
+        self.votes_wasted_dem = None
+        self.votes_wasted_rep = None
+        self.votes_wasted_net = None
 
         self.winner = {
-            "party": None if data is None else data['winner']['party'],
-            "last_name": None if data is None else data['winner']['last_name'],
-            "first_name": None if data is None else data['winner']['first_name'],
+            "party": None if data is None else (data['winner']['party'] if 'winner' in data else None),
+            "last_name": None if data is None else (data['winner']['last_name'] if 'winner' in data else None),
+            "first_name": None if data is None else (data['winner']['first_name'] if 'winner' in data else None),
         }
+
+        if data is not None:
+            wasted_votes = self.calc_wasted_votes(self.votes_rep, self.votes_dem, self.votes_total)
+            self.votes_wasted_dem = wasted_votes['dem']
+            self.votes_wasted_rep = wasted_votes['rep']
+            self.votes_wasted_net = wasted_votes['net']
 
     def calc_wasted_votes(self, votes_rep, votes_dem, votes_total):
         """Calculates the wasted votes of Republican and Democratic candidates
@@ -68,26 +73,33 @@ class DistrictElectionResults(ElectionResults):
 
            Returns a dict of wasted votes for Rep and Dem candidates
         """
-        if votes_total > votes_rep + votes_dem:
-            votes_total = votes_rep + votes_dem
-            warn("Total votes is greater than the sum of votes for Reps and Dems")
-        elif votes_total < votes_rep + votes_dem:
-            raise utils.VotesError(votes_dem=self.votes_dem, votes_rep=self.votes_rep,
-                votes_total=self.votes_total, year=self.year, state=self.state,
-                legislative_body_code=self.legislative_body_code, district=self.district)
+        try:
+            if votes_total > votes_rep + votes_dem:
+                # votes_total = votes_rep + votes_dem
+                # warn("Total votes(={}) is greater than the sum of votes for Reps(={}) and Dems(={}) in {} {}".format(
+                #     votes_total, votes_rep, votes_dem, self.state, self.district
+                # ))
+                pass
+            elif votes_total < votes_rep + votes_dem:
+                raise utils.VotesError(votes_dem=self.votes_dem, votes_rep=self.votes_rep,
+                    votes_total=self.votes_total, year=self.year, state=self.state,
+                    legislative_body_code=self.legislative_body_code, district=self.district)
 
-        votes_to_win = math.floor(votes_total / 2) + 1
-        winning_party = "rep" if votes_rep > votes_dem else "dem"
+            votes_to_win = math.floor(votes_total / 2) + 1
+            winning_party = "rep" if votes_rep > votes_dem else "dem"
 
-        votes_wasted_winner = max(votes_rep, votes_dem) - votes_to_win
-        votes_wasted_loser = min(votes_rep, votes_dem)
+            votes_wasted_winner = max(votes_rep, votes_dem) - votes_to_win
+            votes_wasted_loser = min(votes_rep, votes_dem)
 
-        votes_wasted_rep = votes_wasted_winner if winning_party == "rep" else votes_wasted_loser
-        votes_wasted_dem = votes_wasted_winner if winning_party == "dem" else votes_wasted_loser
-        votes_wasted_net = votes_wasted_dem - votes_wasted_rep
+            votes_wasted_rep = votes_wasted_winner if winning_party == "rep" else votes_wasted_loser
+            votes_wasted_dem = votes_wasted_winner if winning_party == "dem" else votes_wasted_loser
+            votes_wasted_net = votes_wasted_dem - votes_wasted_rep
 
-        return {
-            "rep": votes_wasted_rep,
-            "dem": votes_wasted_dem,
-            "net": votes_wasted_net
-        }
+            return {
+                "rep": votes_wasted_rep,
+                "dem": votes_wasted_dem,
+                "net": votes_wasted_net
+            }
+        except Exception as e:
+            print('Error calculating wasted votes in {} {}'.format(self.state, self.district))
+            raise e

@@ -23,11 +23,36 @@ class DistrictElectionResultsTest(unittest.TestCase):
         self.assertEqual(self.results.votes_dem, None)
         self.assertEqual(self.results.votes_rep, None)
         self.assertEqual(self.results.votes_other, None)
-        self.assertEqual(self.results.votes_voided, None)
+        self.assertEqual(self.results.votes_scattered, None)
         self.assertEqual(self.results.votes_total, None)
         self.assertEqual(self.results.winner['party'], None)
         self.assertEqual(self.results.winner['last_name'], None)
         self.assertEqual(self.results.winner['first_name'], None)
+
+    def test_sets_votes_to_0_if_row_didnt_include_votes_for_a_party(self):
+        # Happens in elections where a candidate ran unopposed
+        data = {
+            'votes_dem': 120,
+            'votes_scattered': 10,
+            'votes_total': 130
+        }
+
+        r = Results(year=2014, state='NY', legislative_body_code=0, district=1, data=data)
+
+        self.assertEqual(r.votes_rep, 0)
+        self.assertEqual(r.votes_other, 0)
+
+
+        data = {
+            'votes_rep': 120,
+            'votes_scattered': 10,
+            'votes_total': 130
+        }
+
+        r = Results(year=2014, state='NY', legislative_body_code=0, district=1, data=data)
+
+        self.assertEqual(r.votes_dem, 0)
+        self.assertEqual(r.votes_other, 0)
 
     # TODO: extract test cases out of this file into a separate fixtures file/dir
     def test_calculates_wasted_votes(self):

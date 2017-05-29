@@ -1,10 +1,10 @@
 backend/entities
-backend/data
-backend/scraper
+#backend/processor
+backend/main.py
 
-# Other project directories
 playground
 source-data
+output-data
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/

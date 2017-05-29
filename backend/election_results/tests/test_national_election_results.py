@@ -22,7 +22,7 @@ class TestNationalElectionResults(unittest.TestCase):
         self.assertEqual(self.results.votes_total_dem, None)
         self.assertEqual(self.results.votes_total_rep, None)
         self.assertEqual(self.results.votes_total_other, None)
-        self.assertEqual(self.results.votes_total_voided, None)
+        self.assertEqual(self.results.votes_total_scattered, None)
         self.assertEqual(self.results.votes_total, None)
         self.assertEqual(self.results.votes_wasted_total_dem, None)
         self.assertEqual(self.results.votes_wasted_total_rep, None)
@@ -37,7 +37,7 @@ class TestNationalElectionResults(unittest.TestCase):
             'votes_total_dem': 100,
             'votes_total_rep': 150,
             'votes_total_other': 20,
-            'votes_total_voided': 15,
+            'votes_total_scattered': 15,
             'votes_total': 270,
             'votes_wasted_total_dem': 50,
             'votes_wasted_total_rep': 45,
@@ -48,19 +48,19 @@ class TestNationalElectionResults(unittest.TestCase):
             'votes_total_dem': 80,
             'votes_total_rep': 120,
             'votes_total_other': 10,
-            'votes_total_voided': 10,
+            'votes_total_scattered': 10,
             'votes_total': 210,
             'votes_wasted_total_dem': 40,
             'votes_wasted_total_rep': 30,
             'votes_wasted_net': 10
         })
 
-        states = [s1, s2]
+        states = { 'AL': s1, 'AK': s2 }
         self.results.summarize_votes(states)
         self.assertEqual(self.results.votes_total_dem, 180)
         self.assertEqual(self.results.votes_total_rep, 270)
         self.assertEqual(self.results.votes_total_other, 30)
-        self.assertEqual(self.results.votes_total_voided, 25)
+        self.assertEqual(self.results.votes_total_scattered, 25)
         self.assertEqual(self.results.votes_total, 480)
         self.assertEqual(self.results.votes_wasted_total_dem, 90)
         self.assertEqual(self.results.votes_wasted_total_rep, 75)
@@ -72,23 +72,23 @@ class TestNationalElectionResults(unittest.TestCase):
             'votes_total_dem': 0,
             'votes_total_rep': 0,
             'votes_total_other': 0,
-            'votes_total_voided': 0,
+            'votes_total_scattered': 0,
             'votes_total': 0,
             'votes_wasted_total_dem': 0,
             'votes_wasted_total_rep': 0,
             'votes_wasted_net': 0
         })
-        self.assertRaises(utils.ElectionResultsError, self.results.summarize_votes, [s])
+        self.assertRaises(utils.ElectionResultsError, self.results.summarize_votes, {'AL': s})
 
     def test_raises_exception_if_StateElectionResults_legislative_body_code_does_not_match(self):
         s = StateElectionResults(year='2016', state='AL', legislative_body_code=1, data={
             'votes_total_dem': 0,
             'votes_total_rep': 0,
             'votes_total_other': 0,
-            'votes_total_voided': 0,
+            'votes_total_scattered': 0,
             'votes_total': 0,
             'votes_wasted_total_dem': 0,
             'votes_wasted_total_rep': 0,
             'votes_wasted_net': 0
         })
-        self.assertRaises(utils.ElectionResultsError, self.results.summarize_votes, [s])
+        self.assertRaises(utils.ElectionResultsError, self.results.summarize_votes, {'AL': s})
