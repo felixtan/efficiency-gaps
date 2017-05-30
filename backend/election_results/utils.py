@@ -13,8 +13,7 @@ class VotesError(ElectionResultsError):
     def __init__(self, votes_dem, votes_rep, votes_total,
         year, state, legislative_body_code, district):
 
-        msg = """Sum of votes for dem(={dem}) and rep(={rep}) is greater than \
-        total(={total}) in {state} {dist}""".format(
+        msg = """Sum of votes for dem(={dem}) and rep(={rep}) is greater than total(={total}) in {state} {dist}""".format(
             dem=votes_dem,
             rep=votes_rep,
             total=votes_total,

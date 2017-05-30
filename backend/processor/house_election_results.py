@@ -208,7 +208,8 @@ class HouseElectionsProcessor:
                         self.reset_district_results()
 
                     # Read row data
-                    self.read_row_data(i, state, district, party, winner_indicator, candidate_last_name, candidate_first_name, ge_votes, ge_votes_runoff, ge_votes_combined, total_votes_label)
+                    if isinstance(district, int):
+                        self.read_row_data(i, state, district, party, winner_indicator, candidate_last_name, candidate_first_name, ge_votes, ge_votes_runoff, ge_votes_combined, total_votes_label)
 
         # Push the last state
         self.push_current_state_results()
