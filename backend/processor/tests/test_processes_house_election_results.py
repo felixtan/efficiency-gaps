@@ -11,7 +11,7 @@ from election_results.district import DistrictElectionResults
 class TestHouseElectionsProcessor(unittest.TestCase):
 
     def setUp(self):
-        self.proc = processor()
+        self.proc = processor(2014)
 
     def tearDown(self):
         del self.proc
