@@ -1,4 +1,4 @@
-gerrymandering_viz_app:
+webapp:
     build: .
     ports:
         - "8000"

@@ -1,10 +1,9 @@
-backend/entities
-#backend/processor
-backend/main.py
+election_data_wrangler/entities
+election_data_wrangler/main.py
 
 playground
-source-data
-output-data
+source_data
+output_data
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
