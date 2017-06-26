@@ -1,9 +1,8 @@
+playground
 election_data_wrangler/entities
 election_data_wrangler/main.py
-
-playground
-source_data
-output_data
+election_data_wrangler/source_data
+election_data_wrangler/output_data
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
