@@ -1,0 +1,11 @@
+gerrymandering_viz_app:
+    build: .
+    ports:
+        - "8000"
+    environment:
+        ENV: DEV
+    links:
+        - postgres
+
+postgres:
+    image: postgres:9.6.3
