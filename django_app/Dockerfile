@@ -2,8 +2,6 @@ FROM python:3.4.6-slim
 
 LABEL maintainer "contact@felixtan.io"
 
-# ENV WORKING_DIR="/home"
-
 RUN pip3 install django==1.11 \
                  psycopg2==2.7
 

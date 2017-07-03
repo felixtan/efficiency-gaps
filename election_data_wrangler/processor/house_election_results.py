@@ -62,7 +62,7 @@ class HouseElectionsProcessor:
                 corresponding major party.
     """
 
-    def __init__(self, year, only_check_for_unhandled_elections=False, print_modifications=False):
+    def __init__(self, year, only_check_for_unhandled_elections=False, print_modifications=False, verbose_read=False):
         """Initializes a HouseElectionsProcessor
 
         Attributes:
@@ -100,6 +100,7 @@ class HouseElectionsProcessor:
         # Options
         self.only_check_for_unhandled_elections = only_check_for_unhandled_elections
         self.print_modifications = print_modifications
+        self.verbose_read = verbose_read
 
     def to_int(self, x):
         """Converts x to int if it's numeric
@@ -159,7 +160,10 @@ class HouseElectionsProcessor:
             district=self.current_district,
             data=self.current_district_results
         )
-        print('pushed district: {}\n'.format(r.__dict__))
+
+        if self.verbose_read:
+            print('pushed district: {}\n'.format(r.__dict__))
+
         self.district_results.append(r)
 
     def push_current_state_results(self):
@@ -173,8 +177,10 @@ class HouseElectionsProcessor:
             district_results=self.district_results
         )
 
-        print('current state={} dist={}'.format(self.current_state, self.current_district))
-        print('pushed state: {}\n'.format(r.__dict__))
+        if self.verbose_read:
+            print('current state={} dist={}'.format(self.current_state, self.current_district))
+            print('pushed state: {}\n'.format(r.__dict__))
+
         self.state_results[self.current_state] = r
 
     def set_winner(self, party, candidate_last_name, candidate_first_name):
@@ -380,7 +386,7 @@ class HouseElectionsProcessor:
                     self.current_district = district
 
                 if state in states:
-                    if not self.only_check_for_unhandled_elections:
+                    if not self.only_check_for_unhandled_elections and self.verbose_read:
                         print('{}: \t{} {} \t{} \t{} \t{} \t{}'.format(i, state, district, candidate_first_name, candidate_last_name, party, ge_votes))
 
                     if self.current_district != district:

@@ -7,21 +7,27 @@ class TestElectionResultsUtils(unittest.TestCase):
         self.assertRaises(TypeError, utils.VotesError,
             votes_dem=0, votes_rep=0, votes_total=0,
             year=0, state='NY', legislative_body_code=0)
+
         self.assertRaises(TypeError, utils.VotesError,
             votes_dem=0, votes_rep=0, votes_total=0,
             year=0, state='NY', district=1)
+
         self.assertRaises(TypeError, utils.VotesError,
             votes_dem=0, votes_rep=0, votes_total=0,
             year=0, legislative_body_code=0, district=1)
+
         self.assertRaises(TypeError, utils.VotesError,
             votes_dem=0, votes_rep=0, votes_total=0,
             state='NY', legislative_body_code=0, district=1)
+
         self.assertRaises(TypeError, utils.VotesError,
             votes_dem=0, votes_rep=0,
             year=0, state='NY', legislative_body_code=0, district=1)
+
         self.assertRaises(TypeError, utils.VotesError,
             votes_dem=0, votes_total=0,
             year=0, state='NY', legislative_body_code=0, district=1)
+
         self.assertRaises(TypeError, utils.VotesError,
             votes_rep=0, votes_total=0,
             year=0, state='NY', legislative_body_code=0, district=1)

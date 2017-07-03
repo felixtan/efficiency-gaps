@@ -1,0 +1,28 @@
+version: "3.2"
+
+services:
+    data_wrangler:
+        image: felixt/gerrymandering_viz/data_wrangler:development
+        container_name: gerrymandering_viz-data_wrangler
+        build: .
+        volumes:
+            - type: bind
+              source: .
+              target: /home
+        stdin_open: true
+        tty: true
+        entrypoint: /bin/bash
+        links:
+            - postgres
+
+    postgres:
+        image: postgres:9.6-alpine
+        container_name: gerrymandering_viz-db_dev
+        environment:
+            - POSTGRES_DB=election_results
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - PGDATA=./output_data
+        ports:
+            - 5432:5432
+        # command: psql postgres postgres

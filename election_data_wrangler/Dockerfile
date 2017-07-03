@@ -1,8 +1,8 @@
-FROM python:3.6.2rc1-slim
+FROM python:3.4.6-slim
 
 LABEL maintainer "contact@felixtan.io"
 
-# ENV WORKING_DIR="/home/app"
+RUN pip install psycopg2==2.7
 
 WORKDIR "/home"
 
