@@ -18,15 +18,29 @@ def print_states_and_properties(results):
 
 def get_states_and_eff_gaps(results):
     return [
-        (state_results.state, state_results.efficiency_gap) for
-        state_results in results.state_results.values()
+        (
+            state_results.state,
+            state_results.efficiency_gap
+        )
+        for state_results in results.state_results.values()
     ]
 
 
+def get_number_of_dists(state_results):
+    return len(
+        state_results.districts_won_rep +
+        state_results.districts_won_dem
+    )
+
+
 def get_states_and_number_of_districts(results):
+    state_results_dict = results.state_results
     return [
-        (state_results.state, len(state_results.districts_won_rep + state_results.districts_won_dem)) for
-        state_results in results.state_results.values()
+        (
+            sr.state,
+            get_number_of_dists(sr)
+        )
+        for sr in state_results_dict.values()
     ]
 
 
@@ -72,11 +86,14 @@ def print_states_by_number_of_districts(results):
 
 
 def print_states_by_magnitude_of_seat_advantage(results):
+    state_results_dict = results.state_results
+
     tuples = [
-        (state_results.state, round(state_results.efficiency_gap *
-        len(state_results.districts_won_rep +
-        state_results.districts_won_dem), 2)) for
-        state_results in results.state_results.values()
+        (
+            sr.state,
+            round(sr.efficiency_gap * get_number_of_dists(sr), 2)
+        )
+        for sr in state_results_dict.values()
     ]
 
     sorted_tuples = sorted(
@@ -89,13 +106,13 @@ def print_states_by_magnitude_of_seat_advantage(results):
     for i, t in enumerate(sorted_tuples):
         print('{}: {}'.format(i, t))
 
-    gross_net_seat_advantage = sum([x[1] for x in tuples])
+    gross_net_seat_advantage = sum([s[1] for s in tuples])
     print('Gross net national seat advantage: {}'.format(
         gross_net_seat_advantage
     ))
 
     # Because there are no fractions of seats
-    real_net_seat_advantage = sum([int(x[1]) for x in tuples])
+    real_net_seat_advantage = sum([int(s[1]) for s in tuples])
     print('Real net national seat advantage: {}'.format(
         real_net_seat_advantage
     ))
@@ -109,6 +126,10 @@ def get_number_of_rows(cursor, table_name):
     return cursor.fetchone()[0]
 
 
+def table_is_empty(cursor, table_is_empty):
+    return get_number_of_rows(cursor, table_name) == 0
+
+
 def create_tables(db_connection):
     cursor = db_connection.cursor()
 
@@ -118,13 +139,17 @@ def create_tables(db_connection):
         ###################
         if opts["drop_tables"]:
             try:
-                print("WARNING: Dropping all tables from the db...")
-                cursor.execute("""
+                drop_all_tables = """
                     drop table district_election_results cascade;
                     drop table state_election_results cascade;
                     drop table elections cascade;
                     drop table states cascade;
-                """)
+                """
+
+                print("WARNING: Dropping all tables from the db...")
+                # TODO: Pose y/n prompt
+
+                cursor.execute(drop_all_tables)
                 print("Recreating tables...")
 
             except psycopg2.Error as e:
@@ -133,15 +158,16 @@ def create_tables(db_connection):
         #######################
         # Create States table #
         #######################
-        if get_number_of_rows(cursor, 'states') == 0:
+        if table_is_empty(cursor, 'states'):
             try:
-                cursor.execute("""
+                create_states_table = """
                     create table if not exists states (
-                        state_id        serial        primary key        not null,
-                        iso_a2          char(2)                          not null,
-                        name            char(14)                         not null
+                        state_id    serial    primary key    not null,
+                        iso_a2      char(2)                  not null,
+                        name        char(14)                 not null
                     );
-                """)
+                """
+                cursor.execute(create_states_table)
                 print('Created states table...')
 
             except psycopg2.Error as e:
@@ -153,30 +179,37 @@ def create_tables(db_connection):
         ##########################
         # Create Districts table #
         ##########################
-        # if get_number_of_rows(cursor, 'districts') == 0:
-        #     cursor.execute("""
-        #         create table if not exists districts (
-        #             id              serial          primary key                  not null,
-        #             state_id        smallint        references states(id)        not null,
-        #             number          smallint                                     not null
-        #     );""")
-        #     print('Created districts table...')
+        # if table_is_empty(cursor, 'districts'):
+        #     try:
+        #         create_districts_table = """
+        #             create table if not exists districts (
+        #                 id          serial      primary key                    not null,
+        #                 state_id    smallint    references states(state_id)    not null,
+        #                 number      smallint                                   not null
+        #             );
+        #         """
+        #         cursor.execute(create_districts_table)
+        #         print('Created districts table...')
+        #
+        #     except psycopg2.Error as e:
+        #         raise e
+        #
         # else:
         #     print('Table districts exists.')
 
         ##########################
         # Create Elections table #
         ##########################
-        if get_number_of_rows(cursor, 'elections') == 0:
+        if table_is_empty(cursor, 'elections'):
             try:
-                # state_id        smallint        references states(id)        not null,
-                cursor.execute("""
+                create_elections_table = """
                     create table if not exists elections (
-                        election_id        serial        primary key        not null,
-                        state              char(2)                          not null,
-                        year               smallint                         not null
+                        election_id    serial    primary key    not null,
+                        state          char(2)                  not null,
+                        year           smallint                 not null
                     );
-                """)
+                """
+                cursor.execute(create_elections_table)
                 print('Created elections table...')
 
             except psycopg2.Error as e:
@@ -188,21 +221,22 @@ def create_tables(db_connection):
         #####################################
         # Create StateElectionResults table #
         #####################################
-        if get_number_of_rows(cursor, 'state_election_results') == 0:
+        if table_is_empty(cursor, 'state_election_results'):
             try:
-                cursor.execute("""
+                create_state_election_results_table = """
                     create table if not exists state_election_results (
-                        election_id             smallint          primary key        references elections(election_id)        not null,
-                        votes_dem               int                                                                           not null,
-                        votes_rep               int                                                                           not null,
-                        votes_other             int                                                                           not null,
-                        votes_total             int                                                                           not null,
-                        votes_wasted_dem        int                                                                           not null,
-                        votes_wasted_rep        int                                                                           not null,
-                        votes_wasted_net        int                                                                           not null,
-                        efficiency_gap          numeric(3,3)                                                                  not null
+                        election_id         smallint    primary key    references elections(election_id)    not null,
+                        votes_dem           int                                                             not null,
+                        votes_rep           int                                                             not null,
+                        votes_other         int                                                             not null,
+                        votes_total         int                                                             not null,
+                        votes_wasted_dem    int                                                             not null,
+                        votes_wasted_rep    int                                                             not null,
+                        votes_wasted_net    int                                                             not null,
+                        efficiency_gap      numeric(3,3)                                                    not null
                     );
-                """)
+                """
+                cursor.execute(create_state_election_results_table)
                 print('Created state_election_results table...')
 
             except psycopg2.Error as e:
@@ -214,22 +248,23 @@ def create_tables(db_connection):
         ########################################
         # Create DistrictElectionResults table #
         ########################################
-        if get_number_of_rows(cursor, 'district_election_results') == 0:
+        if table_is_empty(cursor, 'district_election_results'):
             try:
-                cursor.execute("""
+                create_district_election_results = """
                      create table if not exists district_election_results (
-                         district_election_results_id        serial          primary key                              not null,
-                         election_id                         smallint        references elections(election_id)        not null,
-                         number                              smallint                                                 not null,
-                         votes_dem                           int                                                      not null,
-                         votes_rep                           int                                                      not null,
-                         votes_other                         int                                                      not null,
-                         votes_total                         int                                                      not null,
-                         votes_wasted_dem                    int                                                      not null,
-                         votes_wasted_rep                    int                                                      not null,
-                         votes_wasted_net                    int                                                      not null
+                         district_election_results_id    serial      primary key                          not null,
+                         election_id                     smallint    references elections(election_id)    not null,
+                         number                          smallint                                         not null,
+                         votes_dem                       int                                              not null,
+                         votes_rep                       int                                              not null,
+                         votes_other                     int                                              not null,
+                         votes_total                     int                                              not null,
+                         votes_wasted_dem                int                                              not null,
+                         votes_wasted_rep                int                                              not null,
+                         votes_wasted_net                int                                              not null
                      );
-                """)
+                """
+                cursor.execute(create_district_election_results)
                 print('Created district_election_results table...')
 
             except psycopg2.Error as e:
@@ -243,8 +278,9 @@ def create_tables(db_connection):
         #############################
         from fixtures.states import states as states_json
 
-        states = [(iso_a2, states_json[iso_a2]) for
-            iso_a2 in states_json]
+        states = [
+            (iso_a2, states_json[iso_a2]) for iso_a2 in states_json
+        ]
 
         try:
             insert_state = """
@@ -257,7 +293,7 @@ def create_tables(db_connection):
             for state in states:
                 iso_a2 = state[0]
                 name = state[1]
-                cursor.execute(insert_state, (iso_a2, name, iso_a2))
+                cursor.execute(insert_state, [iso_a2, name, iso_a2])
 
         except psycopg2.Error as e:
             raise e
@@ -315,7 +351,6 @@ def populate_tables(db_connection, national_election_results):
                 where not exists (select * from district_election_results where election_id = %s and number = %s);
             """, [election_id, number, dr.votes_dem, dr.votes_rep, dr.votes_other, dr.votes_total, dr.votes_wasted_dem, dr.votes_wasted_rep, dr.votes_wasted_net, election_id, number])
             print('Created row in district_election_results for district {} {} {}'.format(dr.district, state, sr.year))
-
 
     db_connection.commit()
 
@@ -392,6 +427,7 @@ if __name__ == "__main__":
 
         try:
             import psycopg2
+
             conn = psycopg2.connect(
                 dbname=config.DB_NAME_DEV,
                 host=config.DB_HOST_DEV,
