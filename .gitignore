@@ -3,6 +3,7 @@ playground
 election_data_wrangler/source_data
 election_data_wrangler/output_data
 election_data_wrangler/.env
+election_data_wrangler/config.py
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
