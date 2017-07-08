@@ -1,11 +1,16 @@
-webapp:
-    build: .
-    ports:
-        - "8000"
-    environment:
-        ENV: DEV
-    links:
-        - postgres
+version: "3.2"
 
-postgres:
-    image: postgres:9.6.3
+services:
+    web_api:
+        build: .
+        image: felixt/gerrymandering_viz/web_api:dev
+        container_name: gerrymandering_viz-web_api
+        ports:
+            - "${HOST_DEV}:${PORT_DEV}"
+        stdin_open: true
+        tty: true
+        entrypoint: /bin/bash
+        environment:
+            ENV: DEV
+        external_links:
+            - gerrymandering_viz-db_dev
