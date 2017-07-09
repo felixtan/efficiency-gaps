@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -76,10 +77,11 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': '5432',
+        'HOST': config('DB_HOST_DEV'),
+        'PORT': config('DB_PORT_DEV'),
+        'NAME': config('DB_NAME_DEV'),
+        'USER': config('DB_USER_DEV'),
+        'PASSWORD': config('DB_PASSWORD_DEV')
     }
 }
 

@@ -121,13 +121,37 @@ def print_states_by_magnitude_of_seat_advantage(results):
 #################
 # DB operations #
 #################
+TABLES = [
+    "states",
+    "elections",
+    "state_election_results",
+    "district_election_results"
+]
+
 def get_number_of_rows(cursor, table_name):
     cursor.execute("select count(*) from {};".format(table_name))
     return cursor.fetchone()[0]
 
 
-def table_is_empty(cursor, table_is_empty):
-    return get_number_of_rows(cursor, table_name) == 0
+# The recommended way in SQL and psycopg2 for passing
+# query params into statements doesn't work for table
+# names so do this instead.
+def check_table_exists(table_name):
+    if isinstance(table_name, str):
+        return "select id from {} limit 1;".format(table_name)
+    else:
+        raise TypeError("{} is not a string.")
+
+
+def table_is_empty(cursor, table_name):
+    try:
+        cursor.execute(check_table_exists(table_name))
+        return get_number_of_rows(cursor, table_name) == 0
+    except (psycopg2.Error, TypeError) as e:
+        print("Error: {}".format(e))
+
+        # Assume that the psycopg2.Error is due to table not existing
+        return isinstance(e, psycopg2.Error)
 
 
 def create_tables(db_connection):
@@ -139,6 +163,7 @@ def create_tables(db_connection):
         ###################
         if opts["drop_tables"]:
             try:
+                # TODO: generate this statement using the global const TABLES
                 drop_all_tables = """
                     drop table district_election_results cascade;
                     drop table state_election_results cascade;
@@ -158,23 +183,19 @@ def create_tables(db_connection):
         #######################
         # Create States table #
         #######################
-        if table_is_empty(cursor, 'states'):
-            try:
-                create_states_table = """
-                    create table if not exists states (
-                        state_id    serial    primary key    not null,
-                        iso_a2      char(2)                  not null,
-                        name        char(14)                 not null
-                    );
-                """
-                cursor.execute(create_states_table)
-                print('Created states table...')
+        try:
+            create_states_table = """
+                create table if not exists states (
+                    state_id    serial    primary key    not null,
+                    iso_a2      char(2)                  not null,
+                    name        char(14)                 not null
+                );
+            """
+            cursor.execute(create_states_table)
+            print('Created states table...')
 
-            except psycopg2.Error as e:
-                raise e
-
-        else:
-            print('Table states exists.')
+        except psycopg2.Error as e:
+            raise e
 
         ##########################
         # Create Districts table #
@@ -200,78 +221,66 @@ def create_tables(db_connection):
         ##########################
         # Create Elections table #
         ##########################
-        if table_is_empty(cursor, 'elections'):
-            try:
-                create_elections_table = """
-                    create table if not exists elections (
-                        election_id    serial    primary key    not null,
-                        state          char(2)                  not null,
-                        year           smallint                 not null
-                    );
-                """
-                cursor.execute(create_elections_table)
-                print('Created elections table...')
+        try:
+            create_elections_table = """
+                create table if not exists elections (
+                    election_id    serial    primary key    not null,
+                    state          char(2)                  not null,
+                    year           smallint                 not null
+                );
+            """
+            cursor.execute(create_elections_table)
+            print('Created elections table...')
 
-            except psycopg2.Error as e:
-                raise e
-
-        else:
-            print('Table elections exists.')
+        except psycopg2.Error as e:
+            raise e
 
         #####################################
         # Create StateElectionResults table #
         #####################################
-        if table_is_empty(cursor, 'state_election_results'):
-            try:
-                create_state_election_results_table = """
-                    create table if not exists state_election_results (
-                        election_id         smallint    primary key    references elections(election_id)    not null,
-                        votes_dem           int                                                             not null,
-                        votes_rep           int                                                             not null,
-                        votes_other         int                                                             not null,
-                        votes_total         int                                                             not null,
-                        votes_wasted_dem    int                                                             not null,
-                        votes_wasted_rep    int                                                             not null,
-                        votes_wasted_net    int                                                             not null,
-                        efficiency_gap      numeric(3,3)                                                    not null
-                    );
-                """
-                cursor.execute(create_state_election_results_table)
-                print('Created state_election_results table...')
+        try:
+            create_state_election_results_table = """
+                create table if not exists state_election_results (
+                    election_id         smallint    primary key    references elections(election_id)    not null,
+                    votes_dem           int                                                             not null,
+                    votes_rep           int                                                             not null,
+                    votes_other         int                                                             not null,
+                    votes_total         int                                                             not null,
+                    votes_wasted_dem    int                                                             not null,
+                    votes_wasted_rep    int                                                             not null,
+                    votes_wasted_net    int                                                             not null,
+                    efficiency_gap      numeric(3,3)                                                    not null
+                );
+            """
+            cursor.execute(create_state_election_results_table)
+            print('Created state_election_results table...')
 
-            except psycopg2.Error as e:
-                raise e
-
-        else:
-            print('Table state_election_results exists.')
+        except psycopg2.Error as e:
+            raise e
 
         ########################################
         # Create DistrictElectionResults table #
         ########################################
-        if table_is_empty(cursor, 'district_election_results'):
-            try:
-                create_district_election_results = """
-                     create table if not exists district_election_results (
-                         district_election_results_id    serial      primary key                          not null,
-                         election_id                     smallint    references elections(election_id)    not null,
-                         number                          smallint                                         not null,
-                         votes_dem                       int                                              not null,
-                         votes_rep                       int                                              not null,
-                         votes_other                     int                                              not null,
-                         votes_total                     int                                              not null,
-                         votes_wasted_dem                int                                              not null,
-                         votes_wasted_rep                int                                              not null,
-                         votes_wasted_net                int                                              not null
-                     );
-                """
-                cursor.execute(create_district_election_results)
-                print('Created district_election_results table...')
+        try:
+            create_district_election_results = """
+                 create table if not exists district_election_results (
+                     district_election_results_id    serial      primary key                          not null,
+                     election_id                     smallint    references elections(election_id)    not null,
+                     number                          smallint                                         not null,
+                     votes_dem                       int                                              not null,
+                     votes_rep                       int                                              not null,
+                     votes_other                     int                                              not null,
+                     votes_total                     int                                              not null,
+                     votes_wasted_dem                int                                              not null,
+                     votes_wasted_rep                int                                              not null,
+                     votes_wasted_net                int                                              not null
+                 );
+            """
+            cursor.execute(create_district_election_results)
+            print('Created district_election_results table...')
 
-            except psycopg2.Error as e:
-                raise e
-
-        else:
-            print('Table district_election_results exists.')
+        except psycopg2.Error as e:
+            raise e
 
         #############################
         # Populate the States table #
@@ -368,6 +377,20 @@ def populate_tables(db_connection, national_election_results):
     ))
 
 
+def tables_exist(db_connection):
+    try:
+        cursor = db_connection.cursor()
+
+        for t in TABLES:
+            cursor.execute(check_table_exists(t))
+
+    except (psycopg2.Error, TypeError) as e:
+        print("Error: {}".format(e))
+        return False
+
+    return True
+
+
 if __name__ == "__main__":
     election_year = sys.argv[1]
     flags = sys.argv[2:]
@@ -435,9 +458,7 @@ if __name__ == "__main__":
                 password=config.DB_PASSWORD_DEV
             )
 
-            if opts["create_tables"]:
-                create_tables(conn)
-
+            create_tables(conn)
             populate_tables(conn, results)
 
         except psycopg2.Error as e:
