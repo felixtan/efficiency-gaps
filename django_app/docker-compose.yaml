@@ -5,12 +5,14 @@ services:
         build: .
         image: felixt/gerrymandering_viz/web_api:dev
         container_name: gerrymandering_viz-web_api
+        volumes:
+            - type: bind
+              source: .
+              target: /home
         ports:
-            - "${HOST_DEV}:${PORT_DEV}"
+            - "${PORT_DEV}"
         stdin_open: true
         tty: true
         entrypoint: /bin/bash
         environment:
             ENV: DEV
-        external_links:
-            - gerrymandering_viz-db_dev
