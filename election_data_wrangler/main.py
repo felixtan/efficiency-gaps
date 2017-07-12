@@ -264,16 +264,16 @@ def create_tables(db_connection):
         try:
             create_district_election_results = """
                  create table if not exists district_election_results (
-                     district_election_results_id    serial      primary key                          not null,
-                     election_id                     smallint    references elections(election_id)    not null,
-                     number                          smallint                                         not null,
-                     votes_dem                       int                                              not null,
-                     votes_rep                       int                                              not null,
-                     votes_other                     int                                              not null,
-                     votes_total                     int                                              not null,
-                     votes_wasted_dem                int                                              not null,
-                     votes_wasted_rep                int                                              not null,
-                     votes_wasted_net                int                                              not null
+                     district_election_results_id     serial      primary key                          not null,
+                     election_id                      smallint    references elections(election_id)    not null,
+                     number                           smallint                                         not null,
+                     votes_dem                        int                                              not null,
+                     votes_rep                        int                                              not null,
+                     votes_other                      int                                              not null,
+                     votes_total                      int                                              not null,
+                     votes_wasted_dem                 int                                              not null,
+                     votes_wasted_rep                 int                                              not null,
+                     votes_wasted_net                 int                                              not null
                  );
             """
             cursor.execute(create_district_election_results)

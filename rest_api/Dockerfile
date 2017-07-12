@@ -1,7 +1,4 @@
 FROM python:3.4.6-slim
-# FROM python:3.4.6
-
-LABEL maintainer "contact@felixtan.io"
 
 RUN pip3 install django==1.11 \
                  psycopg2==2.7 \

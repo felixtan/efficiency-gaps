@@ -1,0 +1,21 @@
+version: "3.2"
+
+services:
+    frontend_web:
+        build: .
+        image: felixt/gerrymandering_viz/frontend_web:dev
+        container_name:  gerrymandering_viz-frontend_web
+        # volumes:
+        #     - type: volume
+        #       source: .
+        #       target: /app
+        ports:
+            - target: 3000
+              published: 3000
+              protocol: tcp
+              mode: host
+        stdin_open: true
+        tty: true
+        entrypoint: /bin/bash
+        # environment:
+        #     REACT_WEBPACK_ENV: dev
