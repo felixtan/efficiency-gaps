@@ -5,10 +5,10 @@ services:
         build: .
         image: felixt/gerrymandering_viz/frontend_web:dev
         container_name:  gerrymandering_viz-frontend_web
-        # volumes:
-        #     - type: volume
-        #       source: .
-        #       target: /app
+        volumes:
+            - type: volume
+              source: .
+              target: /home
         ports:
             - target: 3000
               published: 3000
