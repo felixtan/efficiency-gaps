@@ -3,8 +3,10 @@ election_data_wrangler/source_data
 election_data_wrangler/output_data
 election_data_wrangler/.env
 election_data_wrangler/config.py
+
 django_app/.env
-frontend-web/node_modules
+
+frontend_web/node_modules
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
