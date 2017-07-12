@@ -1,0 +1,21 @@
+version: "3.2"
+
+services:
+    web_api:
+        build: .
+        image: felixt/gerrymandering_viz/web_api:dev
+        container_name: gerrymandering_viz-web_api
+        volumes:
+            - type: bind
+              source: .
+              target: /home
+        ports:
+            - target: 8000
+              published: 8000
+              protocol: tcp
+              mode: host
+        stdin_open: true
+        tty: true
+        entrypoint: /bin/bash
+        environment:
+            ENV: DEV
